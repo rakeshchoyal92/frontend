@@ -3,7 +3,7 @@
 
   <head>
     <meta charset="utf-8">
-    <title>%UNITY_WEB_NAME%</title>
+    <title>Planimation</title>
     <style>
       body { margin: 0; }
       #gameContainer { width: 100vw; height: 100vh; }
@@ -11,7 +11,43 @@
     </style>
     <script src="Build/UnityLoader.js"></script>
     <script>
-    var gameInstance = UnityLoader.instantiate("gameContainer", "%UNITY_WEBGL_BUILD_URL%");
+      var domText="";
+      var probText="";
+      var animateText="";
+      var planText="";
+      var solverURL="";
+
+
+    function UnityProgress(gameObject, progress) {
+        if (progress == 1){
+          console.log("Unity Load Successful");
+          window.parent.postMessage({"action":"loadfile"}, "*");    
+        }
+    }
+
+    var gameInstance = UnityLoader.instantiate("gameContainer", "%UNITY_WEBGL_BUILD_URL%",{onProgress: UnityProgress});
+	
+	function solve(){
+      gameInstance.SendMessage("Coordinator","planimationPlugin");
+      gameInstance.SendMessage("Coordinator","setDomain",domText);
+      gameInstance.SendMessage("Coordinator","setProblem",probText);
+      gameInstance.SendMessage("Coordinator","setAnimation",animateText);
+      gameInstance.SendMessage("Coordinator","setPlan",planText);
+      gameInstance.SendMessage("Coordinator","setCustomSolver",solverURL);
+      gameInstance.SendMessage("Coordinator","uploadallfile");
+    }
+
+     window.addEventListener('message',function(event) {
+       if (event.data.domText){
+                       
+        domText=event.data.domText;
+        probText=event.data.probText;
+        animateText=event.data.animateText;
+        planText=event.data.planText;
+        solverURL=event.data.solverURL;
+        solve();
+  }
+},false);
     </script>
   </head>
 
