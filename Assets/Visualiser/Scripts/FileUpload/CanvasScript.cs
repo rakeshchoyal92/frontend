@@ -57,7 +57,12 @@ public class CanvasScript : MonoBehaviour
         {
             ScenesCoordinator.Coordinator.setAnimation(data);
 
-        }else if (type == "visualisationFile")
+        }else if (type == "Plan")
+        {
+            ScenesCoordinator.Coordinator.setPlan(data);
+
+        }
+        else if (type == "visualisationFile")
         {
         	ScenesCoordinator.Coordinator.PushParameters("Visualisation", data);
 
@@ -108,7 +113,10 @@ public class CanvasScript : MonoBehaviour
 			path = UnityEditor.EditorUtility.OpenFilePanel("Open image","","pddl");
 		}else if (type == "visualisationFile"){
 			path = UnityEditor.EditorUtility.OpenFilePanel("Open image","","vfg");
-		}else {
+		}else if (type=="Plan"){
+            path = UnityEditor.EditorUtility.OpenFilePanel("Open image", "", "");
+        }
+		else {
 			path = UnityEditor.EditorUtility.OpenFilePanel("Open image","","pddl");
 		}
 		if (!System.String.IsNullOrEmpty (path)){
@@ -120,7 +128,9 @@ public class CanvasScript : MonoBehaviour
         	UploaderCaptureClick(".pddl");
         } else if (type == "visualisationFile"){
         	UploaderCaptureClick(".vfg");
-        } else {
+        } else if (type=="Plan"){
+            UploaderCaptureClick(".txt,.pddl");
+        }else {
         	UploaderCaptureClick(".pddl");
         }
 #endif

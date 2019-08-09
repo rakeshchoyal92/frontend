@@ -29,6 +29,8 @@ public class ScenesCoordinator : MonoBehaviour
     private string customSolverDomain;
 	private string domaintxt;
 	private string problemtxt;
+    //" " means no plan has been uploaded
+    private string plantxt=" ";
 	private string animationprofile;
     private void Awake()
     {
@@ -56,7 +58,10 @@ public class ScenesCoordinator : MonoBehaviour
 	public void uploadVF(){
 		SceneManager.LoadScene ("Visualisation");
 	}
-
+    public void planimationPlugin()
+    {
+        SceneManager.LoadScene("planimationPlugin");
+    }
 	// Interface for other objects to use 
 	public void uploadallfile(){
 		StartCoroutine (generateVisualiser ());
@@ -70,11 +75,13 @@ public class ScenesCoordinator : MonoBehaviour
 		formData.Add( new MultipartFormDataSection("domain",domaintxt ));
 		formData.Add( new MultipartFormDataSection("problem",problemtxt ));
 		formData.Add( new MultipartFormDataSection("animation",animationprofile ));
+        formData.Add(new MultipartFormDataSection("plan", plantxt));
         formData.Add(new MultipartFormDataSection("url", customSolverDomain));
         //serialize form fields into byte[] => requires a bounday to put in between fields
         byte[] formSections = UnityWebRequest.SerializeFormSections(formData, boundary);
+        //UnityWebRequest www = UnityWebRequest.Post("http://127.0.0.1:8000/upload/pddl", formData);
+		//UnityWebRequest www = UnityWebRequest.Post("https://planning-visualisation-solver.herokuapp.com/upload/pddl", formData);
         UnityWebRequest www = UnityWebRequest.Post("/upload/pddl", formData);
-		//UnityWebRequest www = UnityWebRequest.Post("https://planning-visualisation-solver.herokuapp.com//upload/pddl", formData);
 		www.uploadHandler =  new UploadHandlerRaw(formSections);
 		www.SetRequestHeader("Content-Type", "multipart/form-data; boundary="+ Encoding.UTF8.GetString(boundary));
 		yield return www.SendWebRequest();
@@ -102,6 +109,11 @@ public class ScenesCoordinator : MonoBehaviour
 	public void setAnimation(string animation){
 		this.animationprofile = animation;
 	}
+    // Storing the plan file in the coordinator
+    public void setPlan(string plan)
+    {
+        this.plantxt = plan;
+    }
     // Get custom solver address and store it
     public void setCustomSolver(string customSolver)
     {
